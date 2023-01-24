@@ -51,7 +51,7 @@ app.post("/login", async (req, res) => {
 });
 
 
-app.post('/jobposting', async (req, res) => {
+app.post('/add', async (req, res) => {
     const job = new JobModel(req.body);
     await job.save();
     res.send('Job Is Posted');
