@@ -1,7 +1,8 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const UserModel = require("../models/user.model");
-
+const JobModel = require("../models/Job.model");
+ 
 const app = express.Router();
 
 const bcryptPassword = async (password) => {
@@ -12,7 +13,7 @@ const compareBcryptPassword = async (password, passwordHash) => {
 	return await bcrypt.compare(password, passwordHash);
 };
 
-app.post("/register", async (req, res) => {
+app.post("/signup", async (req, res) => {
 	let { name,email, password } = req.body;
 
 	let user = await UserModel.findOne({ email });
@@ -49,26 +50,18 @@ app.post("/login", async (req, res) => {
 	}
 });
 
-app.post("/calculate",async(req,res)=>{
-    let {amt,interest,years}=req.body
-    
-     try{
-       let i=((+[interest])/100)
-    
-       let calculating=(((((1+i)*(+[years]))-1)/i)(+[amt]))
-       let investment_amt= (+[amt]) * (+[years])
-       let gain=calculating-investment_amt
 
-       res.send({maturityValueValue:(calculating+""),
-       amtInvested:(investment_amt+""),
-       interest_gained:(gain+"")
-    })
-              
-     }
-     catch(err)
-     {
-        res.send(err.message)
-     }    
-         })
+app.post('/add', async (req, res) => {
+    const job = new JobModel(req.body);
+    await job.save();
+    res.send('Job Is Posted');
+})
+
+app.get('/', async (req, res) => {
+    const job = await JobModel.find()
+    res.send({ data: job });
+})
+ 
+
 
 module.exports = app;
